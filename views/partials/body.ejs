@@ -1,0 +1,82 @@
+<style>
+  .progress-container {
+    width: 160px;
+    background: #e9ecef;
+    border-radius: 8px;
+    height: 18px;
+    overflow: hidden;
+    border: 1px solid #d0d0d0;
+    margin: auto;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50, #2e7d32);
+    transition: width 0.4s ease;
+    border-radius: 8px 0 0 8px;
+  }
+
+  td.num {
+    text-align: center;
+  }
+
+  td.left {
+    text-align: left !important;
+  }
+
+  th.left {
+    text-align: left !important;
+  }
+
+  th, td {
+    padding: 12px 10px;
+  }
+</style>
+<section class="summary">
+  <p><h2><b>Estimado cliente usted puede visualizar aquí el avance de la preparación de su pedido, en lo que este sea asignado se visualizara aquí, tiempo de espera promedio por pedido <%= avgTiempoTotalTxt %>.</b></h2></p>
+</section>
+<section class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th class="left"># Documento</th>
+        <th class="left">Tipo de Documento</th>
+        <th>% Avance</th>
+        <th>Tiempo Total (minutos)</th>
+      </tr>
+    </thead>
+      <tbody>
+        <% rows.forEach(r => { 
+          const ms = Number(r.tiempo_total_ms);
+
+          let tiempoFmt = '';
+
+          if (ms && ms > 0) {
+            const minutos  = Math.floor(ms / 60000);
+            const segundos = Math.floor((ms % 60000) / 1000);
+
+            tiempoFmt =
+              String(minutos).padStart(2, '0') + ':' +
+              String(segundos).padStart(2, '0');
+          }
+
+          // % redondeado a 0 decimales
+          const pct = Math.round(Number(r.avance) || 0);
+        %>
+          <tr>
+            <td class="left"><%= r.documentno %></td>
+            <td class="left"><%= r.type_document === 'B' ? 'Boleta' : 'Factura' %></td>
+
+            <td class="num">
+              <div class="progress-container">
+                <div class="progress-bar" style="width: <%= pct %>%"></div>
+              </div>
+              <small><%= pct %>%</small>
+            </td>
+
+            <td class="num"><%= tiempoFmt %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+  </table>
+</section>

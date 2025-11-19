@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Monitor De Preparación de Pedidos</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <meta http-equiv="refresh" content="4"> <!-- auto-refresh cada 10s -->
+</head>
+<body>
+  <header class="topbar">
+    <h1>Monitor De Preparación de Pedidos</h1>
+    <div class="meta">
+      <span>Actualiza cada 4s</span>
+    </div>
+  </header>
+  <main class="container">
+    <%- body %>
+  </main>
+  <footer class="footer">
+    <small>© <%= new Date().getFullYear() %> Monitor</small>
+  </footer>
+</body>
+</html>
