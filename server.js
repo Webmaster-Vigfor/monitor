@@ -66,7 +66,7 @@ function fmtInterval(ms) {
 
 app.get('/', async (req, res) => {
   const from = new Date(); // o usa req.query.from || process.env.DEFAULT_FROM
-
+  const muestra = req.query.muestra; 
   const cte = `
     WITH agg AS (
       SELECT
@@ -81,10 +81,11 @@ app.get('/', async (req, res) => {
         MIN(lr.assigned_at)             AS desde_asignado,
         MAX(lr.updated_at)              AS hasta_actualizado,
         (EXTRACT(EPOCH FROM (MAX(lr.updated_at) - MIN(lr.assigned_at))) * 1000)::bigint AS tiempo_total_ms,
-        (MAX(lr.updated_at) - MIN(lr.assigned_at)) AS t_txt
+        (MAX(lr.updated_at) - MIN(lr.assigned_at)) AS t_txt,
+        (SELECT CONCAT(t.name,' ',t.lastname) from "user" t where t.id=lr."userId" ) as asignadoa
       FROM log_request lr
       WHERE lr.assigned_at >= $1::date
-      GROUP BY lr.request, lr.sales_order, lr.documentno, lr.type_document
+      GROUP BY lr.request, lr.sales_order, lr.documentno, lr.type_document,lr."userId" 
     )
   `;
 
@@ -111,6 +112,7 @@ app.get('/', async (req, res) => {
       pool.query(sqlAvg, [from]),
       pool.query(sqlCount, [from])
     ]);
+    const font = Number(req.query.font) || 18;   // default 18px
 
     const rows = rowsRes.rows;
     const total = Number(countRes.rows[0]?.total || 0);
@@ -122,7 +124,9 @@ app.get('/', async (req, res) => {
       total,
       avgTiempoTotalMs,
       avgTiempoTotalTxt,
-      helpers: { fmtPercent, fmtInt, fmtDate, fmtInterval }
+      helpers: { fmtPercent, fmtInt, fmtDate, fmtInterval },
+      muestra: muestra==='1',
+      font 
     });
   } catch (err) {
     console.error(err);

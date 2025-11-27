@@ -31,6 +31,10 @@
   th, td {
     padding: 12px 10px;
   }
+
+  table {
+    font-size: <%= font %>px;
+  }
 </style>
 <section class="summary">
   <p><h2><b>Estimado cliente usted puede visualizar aquí el avance de la preparación de su pedido, en lo que este sea asignado se visualizara aquí, tiempo de espera promedio por pedido <%= avgTiempoTotalTxt %>.</b></h2></p>
@@ -43,6 +47,9 @@
         <th class="left">Tipo de Documento</th>
         <th>% Avance</th>
         <th>Tiempo Total (minutos)</th>
+        <% if (muestra) { %>
+        <th>Asignado a</th>
+        <% } %>
       </tr>
     </thead>
       <tbody>
@@ -75,6 +82,9 @@
             </td>
 
             <td class="num"><%= tiempoFmt %></td>
+            <% if (muestra) { %>
+              <td align="center"><%=  r.asignadoa %></td>
+            <% } %>
           </tr>
         <% }) %>
       </tbody>
